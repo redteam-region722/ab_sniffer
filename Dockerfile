@@ -162,6 +162,7 @@ FROM base AS app
 WORKDIR "${ABS_API_DIR}"
 COPY --chown=${UID}:${GID} ./src ${ABS_API_DIR}
 COPY --chown=${UID}:${GID} ./scripts/docker/*.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/*.sh
 
 # VOLUME ["${ABS_API_DATA_DIR}"]
 EXPOSE ${ABS_API_PORT}
