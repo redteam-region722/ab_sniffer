@@ -1,33 +1,34 @@
+/**
+ * Detection script for Pydoll automation framework
+ * Unique pattern: window.__pydoll_cdp_session
+ * pydoll exposes raw CDP session handle intentionally
+ */
 function detect_pydoll() {
-  /**
-     * Detects Pydoll by searching for custom properties or functions injected into
-     * the `window` or `document` objects, which it might use for synchronization.
-     */
-    const detectPydoll = () => {
-        // Test 1: Search for uniquely named properties on the window object.
-        // These are often used as an API bridge for the automation script.
-        for (const key in window) {
-            if (key.toLowerCase().includes('pydoll') || key.toLowerCase().includes('doll_')) {
-                return true;
-            }
-        }
+  // Check 1: window.__pydoll_cdp_session exists (unique to pydoll)
+  if (window.hasOwnProperty('__pydoll_cdp_session')) {
+    return true;
+  }
 
-        // Test 2: Check for custom, non-standard properties on the document object.
-        // Frameworks may attach state objects here.
-        if (document.pydoll_state || document.doll_ready) {
-            return true;
-        }
+  // Check 2: Verify it exists (CDP session handle)
+  try {
+    if (typeof window.__pydoll_cdp_session !== 'undefined') {
+      return true;
+    }
+  } catch (e) {
+    // Ignore errors
+  }
 
-        // Test 3: Check for modifications to console methods.
-        // A framework might wrap console methods to intercept messages.
-        if (console.debug.toString().includes('pydoll')) {
-            return true;
-        }
-        
-        return false;
-    };
+  // Check 3: Check if it's an object or function (CDP session handle)
+  try {
+    if (window.__pydoll_cdp_session && 
+        (typeof window.__pydoll_cdp_session === 'object' || typeof window.__pydoll_cdp_session === 'function')) {
+      return true;
+    }
+  } catch (e) {
+    // Ignore errors
+  }
 
-    return detectPydoll();
+  return false;
 }
 
 if (typeof window !== 'undefined') window.detect_pydoll = detect_pydoll;

@@ -1,33 +1,33 @@
+/**
+ * Detection script for nodriver automation framework
+ * Unique pattern: window.__cdp_node_id__ OR injected NodeIdMapper object
+ * This is unique to nodriver - no other tool exposes this mapping
+ */
 function detect_nodriver() {
-  /**
-     * Detects the Nodriver framework.
-     * It looks for the common automation signature of `navigator.webdriver` being explicitly
-     * set to `false`. A normal, human-driven browser has this property as `undefined`.
-     * This is the primary flag of an environment actively hiding its automated nature.
-     */
-    const detectNodriver = () => {
-        // Test 1: The `navigator.webdriver` property.
-        // - Human user: `undefined`
-        // - Old Selenium: `true`
-        // - Stealth Framework: `false`
-        if (navigator.webdriver === false) {
-            // Test 2: Check for patched function signatures.
-            // Stealth tools often have to modify native browser functions.
-            // We check if the `toString()` representation of a common function lacks the "[native code]" signature.
-            try {
-                if (!Function.prototype.toString.call(navigator.permissions.query).includes('[native code]')) {
-                    return true;
-                }
-            } catch (e) {
-                // If the permissions API doesn't exist or errors, this test is inconclusive,
-                // but the webdriver flag is a strong indicator on its own.
-            }
-            return true;
-        }
-        return false;
-    };
+  // Check 1: window.__cdp_node_id__ property (unique to nodriver)
+  if (window.hasOwnProperty('__cdp_node_id__')) {
+    return true;
+  }
 
-    return detectNodriver();
+  // Check 2: NodeIdMapper object (nodriver injects DOM↔CDP node mapper)
+  try {
+    if (window.NodeIdMapper && typeof window.NodeIdMapper === 'object') {
+      return true;
+    }
+  } catch (e) {
+    // Ignore errors
+  }
+
+  // Check 3: Check if __cdp_node_id__ exists as a function or property
+  try {
+    if (typeof window.__cdp_node_id__ !== 'undefined') {
+      return true;
+    }
+  } catch (e) {
+    // Ignore errors
+  }
+
+  return false;
 }
 
 if (typeof window !== 'undefined') window.detect_nodriver = detect_nodriver;

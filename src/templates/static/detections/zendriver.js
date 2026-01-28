@@ -1,28 +1,33 @@
+/**
+ * Detection script for Zendriver automation framework
+ * Unique pattern: window.__zendriver_async__ === true
+ * zendriver marks async CDP execution explicitly (nodriver does not)
+ */
 function detect_zendriver() {
-  /**
-     * Detects Zendriver by looking for an incomplete or non-native `window.chrome` object.
-     * Automation tools often create a placeholder `chrome` object but fail to populate
-     * it with all the functions and properties a real Chrome browser would have.
-     */
-    const detectZendriver = () => {
-        // A real Chrome browser will have a `window.chrome` object.
-        if (window.chrome) {
-            // However, automation tools often fail to implement all its properties.
-            // The `loadTimes` function is a classic example. If the chrome object exists
-            // but `loadTimes` is missing or is not a function, it's a strong sign of spoofing.
-            if (typeof window.chrome.loadTimes !== 'function') {
-                return true;
-            }
-            
-            // Zendriver might also inject a specific marker.
-            if (window.zendriver) {
-                return true;
-            }
-        }
-        return false;
-    };
+  // Check 1: window.__zendriver_async__ === true (unique to zendriver)
+  if (window.hasOwnProperty('__zendriver_async__') && window.__zendriver_async__ === true) {
+    return true;
+  }
 
-    return detectZendriver();
+  // Check 2: Check if __zendriver_async__ exists and is true
+  try {
+    if (window.__zendriver_async__ === true) {
+      return true;
+    }
+  } catch (e) {
+    // Ignore errors
+  }
+
+  // Check 3: Verify the property exists and has the correct value
+  try {
+    if (typeof window.__zendriver_async__ !== 'undefined' && window.__zendriver_async__ === true) {
+      return true;
+    }
+  } catch (e) {
+    // Ignore errors
+  }
+
+  return false;
 }
 
 if (typeof window !== 'undefined') window.detect_zendriver = detect_zendriver;
