@@ -52,3 +52,4 @@ function detect_puppeteerextra() {
 }
 
 if (typeof window !== 'undefined') window.detect_puppeteerextra = detect_puppeteerextra;
+

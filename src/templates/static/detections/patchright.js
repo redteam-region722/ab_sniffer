@@ -31,3 +31,4 @@ function detect_patchright() {
 }
 
 if (typeof window !== 'undefined') window.detect_patchright = detect_patchright;
+

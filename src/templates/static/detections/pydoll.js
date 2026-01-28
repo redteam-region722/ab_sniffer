@@ -32,3 +32,4 @@ function detect_pydoll() {
 }
 
 if (typeof window !== 'undefined') window.detect_pydoll = detect_pydoll;
+

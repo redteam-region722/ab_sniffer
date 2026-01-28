@@ -31,3 +31,4 @@ function detect_botasaurus() {
 }
 
 if (typeof window !== 'undefined') window.detect_botasaurus = detect_botasaurus;
+

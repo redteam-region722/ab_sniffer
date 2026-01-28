@@ -31,3 +31,4 @@ function detect_nodriver() {
 }
 
 if (typeof window !== 'undefined') window.detect_nodriver = detect_nodriver;
+

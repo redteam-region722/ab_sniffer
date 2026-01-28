@@ -31,3 +31,4 @@ function detect_seleniumbase() {
 }
 
 if (typeof window !== 'undefined') window.detect_seleniumbase = detect_seleniumbase;
+

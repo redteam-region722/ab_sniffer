@@ -32,3 +32,4 @@ function detect_seleniumdriverless() {
 }
 
 if (typeof window !== 'undefined') window.detect_seleniumdriverless = detect_seleniumdriverless;
+
